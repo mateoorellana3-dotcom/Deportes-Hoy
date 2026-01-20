@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutbolHoy - Noticias de Fútbol en Vivo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: #ffd700;
+            font-size: 2rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        /* Banner Principal */
+        .banner {
+            background: linear-gradient(rgba(30, 60, 114, 0.8), rgba(42, 82, 152, 0.8)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><rect fill="%23f5f5f5" width="1200" height="400"/><circle cx="600" cy="200" r="100" fill="%23ffd700" opacity="0.1"/><circle cx="200" cy="100" r="50" fill="%23ffd700" opacity="0.05"/></svg>');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-content {
+            max-width: 800px;
+        }
+
+        .banner h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .banner p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .banner-btn {
+            background-color: #ffd700;
+            color: #1e3c72;
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .banner-btn:hover {
+            background-color: #ffed4e;
+        }
+
+        /* Contenedor Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #1e3c72;
+            margin: 2rem 0 1.5rem;
+            border-bottom: 3px solid #ffd700;
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        /* Noticias Destacadas */
+        .noticias-destacadas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .noticia-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .noticia-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .noticia-imagen {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .noticia-contenido {
+            padding: 1.5rem;
+        }
+
+        .noticia-fecha {
+            color: #999;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .noticia-titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            color: #1e3c72;
+        }
+
+        .noticia-descripcion {
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .noticia-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            background-color: #ffd700;
+            color: #1e3c72;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .leer-mas {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .leer-mas:hover {
+            color: #ffd700;
+        }
+
+        /* Tabla de Posiciones */
+        .tabla-posiciones {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .tabla-posiciones table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .tabla-posiciones th {
+            background-color: #1e3c72;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .tabla-posiciones td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tabla-posiciones tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .equipo-nombre {
+            font-weight: bold;
+            color: #1e3c72;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .puntos {
+            background-color: #ffd700;
+            color: #1e3c72;
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        /* Próximos Partidos */
+        .proximos-partidos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .partido-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            border-left: 4px solid #ffd700;
+        }
+
+        .partido-fecha {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .equipos {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .equipo {
+            text-align: center;
+        }
+
+        .escudo {
+            font-size: 2.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .nombre-equipo {
+            font-weight: bold;
+            color: #1e3c72;
+            font-size: 0.95rem;
+        }
+
+        .vs {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .competicion {
+            color: #999;
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Estadísticas */
+        .estadisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .estadistica-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .estadistica-numero {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .estadistica-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1e3c72;
+            color: white;
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            color: #ffd700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: #ffd700;
+        }
+
+        .redes-sociales {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .redes-sociales a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #2a5298;
+            border-radius: 50%;
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        .redes-sociales a:hover {
+            background-color: #ffd700;
+            color: #1e3c72;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #2a5298;
+            padding-top: 2rem;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .banner h1 {
+                font-size: 2rem;
+            }
+
+            nav {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .noticias-destacadas {
+                grid-template-columns: 1fr;
+            }
+
+            .equipos {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-futbol"></i>
+                <span>FutbolHoy</span>
+            </div>
+            <nav>
+                <a href="#inicio">Inicio</a>
+                <a href="#noticias">Noticias</a>
+                <a href="#posiciones">Posiciones</a>
+                <a href="#partidos">Partidos</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Banner Principal -->
+    <section id="inicio" class="banner">
+        <div class="banner-content">
+            <h1>Bienvenido a FutbolHoy</h1>
+            <p>Tu fuente de noticias, análisis y actualizaciones en tiempo real del fútbol mundial</p>
+            <button class="banner-btn">Explorar Noticias</button>
+        </div>
+    </section>
+
+    <!-- Contenido Principal -->
+    <main class="container">
+        <!-- Noticias Destacadas -->
+        <section id="noticias">
+            <h2 class="section-title">📰 Noticias Destacadas</h2>
+            <div class="noticias-destacadas">
+                <article class="noticia-card">
+                    <div class="noticia-imagen">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="noticia-contenido">
+                        <div class="noticia-fecha">
+                            <i class="fas fa-calendar"></i> 20 de Enero, 2026
+                        </div>
+                        <h3 class="noticia-titulo">Sorpresas en la Jornada de Champions League</h3>
+                        <p class="noticia-descripcion">Los favoritos reciben duras lecciones en el torneo europeo más importante. Analiza los resultados inesperados y cómo esto podría cambiar las semifinales.</p>
+                        <div class="noticia-footer">
+                            <span class="etiqueta">Champions League</span>
+                            <a href="#" class="leer-mas">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="noticia-card">
+                    <div class="noticia-imagen">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="noticia-contenido">
+                        <div class="noticia-fecha">
+                            <i class="fas fa-calendar"></i> 19 de Enero, 2026
+                        </div>
+                        <h3 class="noticia-titulo">Nuevo fichaje en el equipo del momento</h3>
+                        <p class="noticia-descripcion">Un jugador estrella se une al proyecto más ambicioso del mercado actual. Conoce los detalles del traspaso más comentado de la temporada.</p>
+                        <div class="noticia-footer">
+                            <span class="etiqueta">Mercado</span>
+                            <a href="#" class="leer-mas">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="noticia-card">
+                    <div class="noticia-imagen">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="noticia-contenido">
+                        <div class="noticia-fecha">
+                            <i class="fas fa-calendar"></i> 18 de Enero, 2026
+                        </div>
+                        <h3 class="noticia-titulo">Hazaña histórica en la Liga Nacional</h3>
+                        <p class="noticia-descripcion">Un equipo escribe su nombre en los libros de historia al conseguir una victoria épica. Revive los momentos que quedarán para la eternidad.</p>
+                        <div class="noticia-footer">
+                            <span class="etiqueta">Liga Local</span>
+                            <a href="#" class="leer-mas">Leer más →</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Estadísticas Generales -->
+        <section>
+            <h2 class="section-title">📊 Estadísticas de la Jornada</h2>
+            <div class="estadisticas">
+                <div class="estadistica-card">
+                    <div class="estadistica-numero">127</div>
+                    <div class="estadistica-label">Goles Anotados</div>
+                </div>
+                <div class="estadistica-card">
+                    <div class="estadistica-numero">45</div>
+                    <div class="estadistica-label">Partidos Jugados</div>
+                </div>
+                <div class="estadistica-card">
+                    <div class="estadistica-numero">82</div>
+                    <div class="estadistica-label">Tarjetas Amarillas</div>
+                </div>
+                <div class="estadistica-card">
+                    <div class="estadistica-numero">12</div>
+                    <div class="estadistica-label">Tarjetas Rojas</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabla de Posiciones -->
+        <section id="posiciones">
+            <h2 class="section-title">🏆 Tabla de Posiciones - Liga Española</h2>
+            <div class="tabla-posiciones">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pos</th>
+                            <th>Equipo</th>
+                            <th>PJ</th>
+                            <th>G</th>
+                            <th>E</th>
+                            <th>P</th>
+                            <th>GF</th>
+                            <th>GC</th>
+                            <th>DG</th>
+                            <th>Pts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1</strong></td>
+                            <td class="equipo-nombre"><i class="fas fa-star"></i> Real Madrid</td>
+                            <td>18</td>
+                            <td>14</td>
+                            <td>2</td>
+                            <td>2</td>
+                            <td>48</td>
+                            <td>18</td>
+                            <td>+30</td>
+                            <td class="puntos">44</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2</strong></td>
+                            <td class="equipo-nombre"><i class="fas fa-star"></i> Barcelona</td>
+                            <td>18</td>
+                            <td>13</td>
+                            <td>3</td>
+                            <td>2</td>
+                            <td>45</td>
+                            <td>15</td>
+                            <td>+30</td>
+                            <td class="puntos">42</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3</strong></td>
+                            <td class="equipo-nombre"><i class="fas fa-futbol"></i> Atlético Madrid</td>
+                            <td>18</td>
+                            <td>12</td>
+                            <td>2</td>
+                            <td>4</td>
+                            <td>38</td>
+                            <td>22</td>
+                            <td>+16</td>
+                            <td class="puntos">38</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4</strong></td>
+                            <td class="equipo-nombre"><i class="fas fa-futbol"></i> Sevilla</td>
+                            <td>18</td>
+                            <td>10</td>
+                            <td>4</td>
+                            <td>4</td>
+                            <td>35</td>
+                            <td>20</td>
+                            <td>+15</td>
+                            <td class="puntos">34</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5</strong></td>
+                            <td class="equipo-nombre"><i class="fas fa-futbol"></i> Real Sociedad</td>
+                            <td>18</td>
+                            <td>9</td>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>32</td>
+                            <td>24</td>
+                            <td>+8</td>
+                            <td class="puntos">31</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Próximos Partidos -->
+        <section id="partidos">
+            <h2 class="section-title">⚽ Próximos Partidos</h2>
+            <div class="proximos-partidos">
+                <div class="partido-card">
+                    <div class="partido-fecha">
+                        <i class="fas fa-clock"></i> Sábado 25 de Enero - 16:00
+                    </div>
+                    <div class="equipos">
+                        <div class="equipo">
+                            <div class="escudo">👑</div>
+                            <div class="nombre-equipo">Real Madrid</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="equipo">
+                            <div class="escudo">🔵</div>
+                            <div class="nombre-equipo">Barcelona</div>
+                        </div>
+                    </div>
+                    <div class="competicion">La Liga Española</div>
+                </div>
+
+                <div class="partido-card">
+                    <div class="partido-fecha">
+                        <i class="fas fa-clock"></i> Martes 28 de Enero - 21:00
+                    </div>
+                    <div class="equipos">
+                        <div class="equipo">
+                            <div class="escudo">⚪</div>
+                            <div class="nombre-equipo">Juventus</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="equipo">
+                            <div class="escudo">🔴</div>
+                            <div class="nombre-equipo">AC Milan</div>
+                        </div>
+                    </div>
+                    <div class="competicion">Serie A Italiana</div>
+                </div>
+
+                <div class="partido-card">
+                    <div class="partido-fecha">
+                        <i class="fas fa-clock"></i> Domingo 26 de Enero - 15:30
+                    </div>
+                    <div class="equipos">
+                        <div class="equipo">
+                            <div class="escudo">⛰️</div>
+                            <div class="nombre-equipo">Manchester Utd</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="equipo">
+                            <div class="escudo">🩵</div>
+                            <div class="nombre-equipo">Manchester City</div>
+                        </div>
+                    </div>
+                    <div class="competicion">Premier League</div>
+                </div>
+
+                <div class="partido-card">
+                    <div class="partido-fecha">
+                        <i class="fas fa-clock"></i> Miércoles 29 de Enero - 20:45
+                    </div>
+                    <div class="equipos">
+                        <div class="equipo">
+                            <div class="escudo">🇫🇷</div>
+                            <div class="nombre-equipo">París SG</div>
+                        </div>
+                        <div class="vs">VS</div>
+                        <div class="equipo">
+                            <div class="escudo">🦁</div>
+                            <div class="nombre-equipo">Lyon</div>
+                        </div>
+                    </div>
+                    <div class="competicion">Ligue 1 Francesa</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Sobre FutbolHoy</h3>
+                    <p>Tu plataforma integral de noticias, análisis y cobertura en tiempo real del fútbol mundial. Mantente actualizado con lo mejor del deporte rey.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#noticias">Noticias</a></li>
+                        <li><a href="#posiciones">Posiciones</a></li>
+                        <li><a href="#partidos">Próximos Partidos</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Competiciones</h3>
+                    <ul>
+                        <li><a href="#">La Liga Española</a></li>
+                        <li><a href="#">Premier League</a></li>
+                        <li><a href="#">Serie A Italiana</a></li>
+                        <li><a href="#">Ligue 1 Francesa</a></li>
+                        <li><a href="#">Champions League</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Síguenos</h3>
+                    <div class="redes-sociales">
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 FutbolHoy. Todos los derechos reservados. Pasión por el fútbol.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Agregar interactividad básica
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Agregar interactividad a los botones de noticias
+        document.querySelectorAll('.noticia-card').forEach(card => {
+            card.addEventListener('click', function() {
+                alert('Noticia seleccionada. En una versión completa, aquí se abriría la nota completa.');
+            });
+        });
+
+        // Agregar interactividad a los partidos
+        document.querySelectorAll('.partido-card').forEach(card => {
+            card.addEventListener('click', function() {
+                alert('Partido seleccionado. En una versión completa, aquí verías detalles y apuestas.');
+            });
+        });
+    </script>
+</body>
+</html>
